@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <title>Conoce tu categoría</title>
+    <style>
+      /* Estilos para la barra de búsqueda */
+      #search-box {
+        width: 300px;
+        padding: 10px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+        <div class="container  text-center card p-5 border bg-white">
+            <h1>Conoce tu categoría</h1>
+            <p>Ingresa tu RUT: (sin puntos ni guión o dígito verificador)</p>
+            <div class="mt-5"><input type="text" id="search-box" placeholder="12345678"></div>
+            <button class="btn btn-success" style="margin: 15px;" onclick="categoria()">Consultar</button>
+            <div style="margin: 20px" id="result"></div>
+        </div>
+
+
+
+<!--JS Library-->
+
+    <script>
+
+        function categoria(){
+
+        let URL = `https://prueba-somos-2023-default-rtdb.firebaseio.com/`;
+        var rut = document.querySelector('#search-box').value;
+        var rut_url = URL + rut + ".json";
+        console.log (rut_url);
+
+        let element = document.getElementById ("result")
+
+        fetch(rut_url)
+            .then(response => response.json())
+            .then(info =>{ element.innerHTML = `<p>tu categoría es: ${info.Categoria}</p>
+            <p>tu descuento es: ${info.descuento}</p>
+            `})
+            .catch(error => console.log(error))  
+        };
+    </script>
+</body>
+</html>
