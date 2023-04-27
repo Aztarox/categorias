@@ -7,6 +7,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <!--Recaptcha Google-->
     <script src="https://www.google.com/recaptcha/api.js?render=6Lfh074lAAAAADUf-Ollpev-t8p1JzF-GFXpy5fo"></script>
+    <!--SweetAlert2-->
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma/bulma.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
     <title>Conoce tu categoría</title>
     <style>
       /* Estilos para la barra de búsqueda */
@@ -21,9 +25,9 @@
         <div class="container  text-center card p-5 border bg-white">
             <h1>Conoce tu categoría</h1>
             <p>Ingresa tu RUT: (sin puntos ni guión o dígito verificador)</p>
-            <div class="mt-5"><input type="text" id="search-box" placeholder="12345678"></div>
+            <div class="mt-5"><input id="search-box" placeholder="12345678"></div>
             <button id="enviar" class="btn btn-success" style="margin: 15px;" onclick="categoria()">Consultar</button>
-            <div style="margin: 20px" id="result"></div>
+
             <input type="hidden" id="token" />
         </div>
 
@@ -33,23 +37,58 @@
 
 <!--Buscar en la API el Rut-->
     <script>
+          function categoria(){
 
-        function categoria(){
+            let URL = `https://prueba-somos-2023-default-rtdb.firebaseio.com/`;
+            var rut = document.querySelector('#search-box').value;
+            var rut_url = URL + rut + ".json";
+            var rutnum = parseInt(rut)
 
-        let URL = `https://prueba-somos-2023-default-rtdb.firebaseio.com/`;
-        var rut = document.querySelector('#search-box').value;
-        var rut_url = URL + rut + ".json";
-        console.log (rut_url);
+          if (rutnum >= 1){  
+            
+            fetch(rut_url)
+                .then(response => response.json())
+                .then(info =>{ 
+                  console.log(info)
 
-        let element = document.getElementById ("result")
+                  if (info === null ){
+                    Swal.fire({
+                    position: 'center',
+                    icon: 'question',
+                    title: 'Aún no eres Somos Partner?',
+                    text: 'Inscríbete aquí',
+                    showConfirmButton: false,
+                  })}
+                  else{
+                  
+                  Swal.fire({
+                    title: 'Esta es tu información',
+                    html: `tu categoría es: ${info.Categoria} <br> tu descuento es: ${info.descuento}`,
+                    icon: 'info',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK',
+                    backdrop: `
+                    rgba(0,0,123,0.4)
+                    url("https://i.gifer.com/PYh.gif")
+                    left top
+                    no-repeat
+                  `
+                  })
+                }
+                })
+                .catch(error => console.log(error))
+        }      
 
-        fetch(rut_url)
-            .then(response => response.json())
-            .then(info =>{ element.innerHTML = `<p>tu categoría es: ${info.Categoria}</p>
-            <p>tu descuento es: ${info.descuento}</p>
-            `})
-            .catch(error => console.log(error))  
-        };
+          else{ 
+          
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'El valor no es válido',
+            })
+            
+          }      
+          };    
     </script>
 
 <!--ReCaptcha v3-->
@@ -66,6 +105,5 @@
       });
       
     </script>
-
   </body>
 </html>
